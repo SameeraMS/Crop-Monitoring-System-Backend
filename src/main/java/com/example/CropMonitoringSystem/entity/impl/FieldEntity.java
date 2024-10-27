@@ -1,6 +1,5 @@
 package com.example.CropMonitoringSystem.entity.impl;
 
-import com.example.CropMonitoringSystem.entity.EquipmentType;
 import com.example.CropMonitoringSystem.entity.SuperEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,7 @@ public class FieldEntity implements SuperEntity {
     private Point fieldLocation;
     private Double fieldSize;
 
-    @OneToMany(mappedBy = "field")
+    @OneToMany(mappedBy = "field",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CropEntity> crops;
 
     @ManyToMany(mappedBy = "fields")
@@ -34,7 +33,7 @@ public class FieldEntity implements SuperEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String image2;
 
-    @OneToMany(mappedBy = "field")
+    @OneToMany(mappedBy = "field",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<EquipmentEntity> equipments;
 
     @ManyToOne

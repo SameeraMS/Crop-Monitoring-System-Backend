@@ -23,12 +23,12 @@ public class LogEntity implements SuperEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String image;
 
-    @OneToMany(mappedBy = "log")
+    @OneToMany(mappedBy = "log",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<FieldEntity> fields;
 
-    @OneToMany(mappedBy = "log")
+    @OneToMany(mappedBy = "log",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CropEntity> crops;
 
-    @OneToMany(mappedBy = "log")
+    @OneToMany(mappedBy = "log",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<StaffEntity> staffs;
 }

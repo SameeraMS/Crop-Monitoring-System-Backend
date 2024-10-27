@@ -1,4 +1,20 @@
 package com.example.CropMonitoringSystem.dto.impl;
 
-public class CropDto {
+import com.example.CropMonitoringSystem.dto.status.CropStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class CropDto implements CropStatus {
+    private String cropId;
+    private String commonName;
+    private String scientificName;
+    private String cropImg;
+    private String category;
+    private String cropSeason;
+    private String fieldId;
+    private String logId;
 }
