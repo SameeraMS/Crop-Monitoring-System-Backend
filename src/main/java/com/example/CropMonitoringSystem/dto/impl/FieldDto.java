@@ -1,6 +1,6 @@
 package com.example.CropMonitoringSystem.dto.impl;
 
-import com.example.CropMonitoringSystem.dto.status.FieldStatus;
+import com.example.CropMonitoringSystem.dto.SuperDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class FieldDto implements FieldStatus {
+public class FieldDto implements SuperDto {
     private String fieldId;
     private String fieldName;
     private String fieldLocation;

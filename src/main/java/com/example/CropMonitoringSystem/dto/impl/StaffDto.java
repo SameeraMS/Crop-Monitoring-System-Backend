@@ -1,6 +1,6 @@
 package com.example.CropMonitoringSystem.dto.impl;
 
-import com.example.CropMonitoringSystem.dto.status.StaffStatus;
+import com.example.CropMonitoringSystem.dto.SuperDto;
 import com.example.CropMonitoringSystem.entity.Gender;
 import com.example.CropMonitoringSystem.entity.Role;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class StaffDto implements StaffStatus {
+public class StaffDto implements SuperDto {
     private String staffId;
     private String firstName;
     private String lastName;

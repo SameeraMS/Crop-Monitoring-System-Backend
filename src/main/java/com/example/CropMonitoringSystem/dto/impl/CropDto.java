@@ -1,6 +1,6 @@
 package com.example.CropMonitoringSystem.dto.impl;
 
-import com.example.CropMonitoringSystem.dto.status.CropStatus;
+import com.example.CropMonitoringSystem.dto.SuperDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CropDto implements CropStatus {
+public class CropDto implements SuperDto {
     private String cropId;
     private String commonName;
     private String scientificName;

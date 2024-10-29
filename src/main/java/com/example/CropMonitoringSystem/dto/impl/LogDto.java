@@ -1,6 +1,6 @@
 package com.example.CropMonitoringSystem.dto.impl;
 
-import com.example.CropMonitoringSystem.dto.status.LogStatus;
+import com.example.CropMonitoringSystem.dto.SuperDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class LogDto implements LogStatus {
+public class LogDto implements SuperDto {
     private String logId;
     private String logDate;
     private String logDetails;
