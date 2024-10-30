@@ -23,6 +23,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void saveVehicle(VehicleDto vehicleDto) {
+        vehicleDto.setVehicleId(generateVehicleId());
         VehicleEntity save = vehicleDao.save(mapping.toVehicleEntity(vehicleDto));
         if (save == null) {
             throw new DataPersistException("Vehicle not saved");
@@ -62,6 +63,19 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleDto> getVehicles() {
         return mapping.toVehicleDtoList(vehicleDao.findAll());
+    }
+
+    @Override
+    public String generateVehicleId() {
+        String maxVehicleId = vehicleDao.generateVehicleId();
+
+        if (maxVehicleId == null) {
+            return "V00-001";
+        }
+
+        int newVehicleId = Integer.parseInt(maxVehicleId.replace("V00-", "")) + 1;
+        return String.format("V00-%03d", newVehicleId);
+
     }
 
 
