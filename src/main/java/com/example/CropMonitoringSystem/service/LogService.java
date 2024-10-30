@@ -10,4 +10,5 @@ public interface LogService {
     void deleteLog(String logId);
     LogDto getSelectedLog(String logId);
     List<LogDto> getAllLogs();
+    String generateLogId();
 }

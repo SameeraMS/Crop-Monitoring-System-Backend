@@ -63,4 +63,17 @@ public class FieldServiceImpl implements FieldService {
     public List<FieldDto> getAllFields() {
         return mapping.toFieldDtoList(fieldDao.findAll());
     }
+
+    @Override
+    public String generateFieldId() {
+        String maxFieldId = fieldDao.generateFieldId();
+
+        if (maxFieldId == null) {
+            return "F00-001";
+        }
+
+        int newFieldId = Integer.parseInt(maxFieldId.replace("F00-", "")) + 1;
+        return String.format("F00-%03d", newFieldId);
+
+    }
 }

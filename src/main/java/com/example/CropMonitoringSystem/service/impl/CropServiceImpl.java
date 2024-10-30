@@ -65,4 +65,17 @@ public class CropServiceImpl implements CropService {
     public List<CropDto> getAllCrops() {
         return mapping.toCropDtoList(cropDao.findAll());
     }
+
+    @Override
+    public String generateCropId() {
+        String maxCropId = cropDao.generateCropId();
+
+        if (maxCropId == null) {
+            return "C00-001";
+        }
+
+        int newCropId = Integer.parseInt(maxCropId.replace("C00-", "")) + 1;
+        return String.format("C00-%03d", newCropId);
+
+    }
 }

@@ -64,4 +64,17 @@ public class EquipmentServiceImpl implements EquipmentService {
     public List<EquipmentDto> getAllEquipment() {
         return mapping.toEquipmentDtoList(equipmentDao.findAll());
     }
+
+    @Override
+    public String generateEquipmentId() {
+        String maxEquipmentId = equipmentDao.generateEquipmentId();
+
+        if (maxEquipmentId == null) {
+            return "E00-001";
+        }
+
+        int newEquipmentId = Integer.parseInt(maxEquipmentId.replace("E00-", "")) + 1;
+        return String.format("E00-%03d", newEquipmentId);
+
+    }
 }

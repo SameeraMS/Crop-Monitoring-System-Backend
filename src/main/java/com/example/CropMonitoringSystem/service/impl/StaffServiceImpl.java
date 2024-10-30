@@ -66,5 +66,17 @@ public class StaffServiceImpl implements StaffService {
         return mapping.toStaffDtoList(staffDao.findAll());
     }
 
+    @Override
+    public String generateStaffId() {
+        String staffId = staffDao.generateStaffId();
+
+        if (staffId == null) {
+            return "S00-001";
+        }
+
+        int newStaffId = Integer.parseInt(staffId.replace("S00-", "")) + 1;
+        return String.format("S00-%03d", newStaffId);
+    }
+
 
 }

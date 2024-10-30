@@ -62,4 +62,17 @@ public class LogServiceImpl implements LogService {
     public List<LogDto> getAllLogs() {
         return mapping.toLogDtoList(logDao.findAll());
     }
+
+    @Override
+    public String generateLogId() {
+        String maxLogId = logDao.generateLogId();
+
+        if (maxLogId == null) {
+            return "L00-001";
+        }
+
+        int newLogId = Integer.parseInt(maxLogId.replace("L00-", "")) + 1;
+        return String.format("L00-%03d", newLogId);
+
+    }
 }
