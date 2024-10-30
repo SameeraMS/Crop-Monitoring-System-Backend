@@ -37,7 +37,7 @@ public class FieldEntity implements SuperEntity {
     private List<EquipmentEntity> equipments;
 
     @ManyToOne
-    @JoinColumn(name = "logId",nullable = false)
+    @JoinColumn(name = "logId")
     private LogEntity log;
 
 

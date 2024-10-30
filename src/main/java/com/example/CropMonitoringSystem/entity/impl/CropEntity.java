@@ -24,10 +24,10 @@ public class CropEntity implements SuperEntity {
     private String cropSeason;
 
     @ManyToOne
-    @JoinColumn(name = "fieldId",nullable = false)
+    @JoinColumn(name = "fieldId")
     private FieldEntity field;
 
     @ManyToOne
-    @JoinColumn(name = "logId",nullable = false)
+    @JoinColumn(name = "logId")
     private LogEntity log;
 }

@@ -25,10 +25,10 @@ public class EquipmentEntity implements SuperEntity {
     private Status equipmentStatus;
 
     @ManyToOne
-    @JoinColumn(name = "staffId",nullable = false)
+    @JoinColumn(name = "staffId")
     private StaffEntity staff;
 
     @ManyToOne
-    @JoinColumn(name = "fieldId",nullable = false)
+    @JoinColumn(name = "fieldId")
     private FieldEntity field;
 }

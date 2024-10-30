@@ -6,10 +6,12 @@ import com.example.CropMonitoringSystem.entity.impl.UserEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.UserService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,4 +65,5 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         return mapping.toUserDtoList(userDao.findAll());
     }
+
 }
