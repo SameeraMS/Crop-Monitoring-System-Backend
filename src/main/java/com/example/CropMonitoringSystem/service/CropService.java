@@ -11,5 +11,6 @@ public interface CropService {
     CropDto getSelectedCrop(String cropId);
     List<CropDto> getAllCrops();
     String generateCropId();
+    void uploadCropImage(String cropId, String image);
 
 }

@@ -78,4 +78,16 @@ public class CropServiceImpl implements CropService {
         return String.format("C00-%03d", newCropId);
 
     }
+
+    @Override
+    public void uploadCropImage(String cropId, String image) {
+
+        Optional<CropEntity> searched = cropDao.findById(cropId);
+        if (searched.isPresent()) {
+            searched.get().setCropImg(image);
+            cropDao.save(searched.get());
+        } else {
+            throw new NotFoundException("Crop +" + cropId + " not found");
+        }
+    }
 }

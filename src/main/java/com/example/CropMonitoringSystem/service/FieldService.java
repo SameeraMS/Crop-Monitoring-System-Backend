@@ -11,4 +11,5 @@ public interface FieldService {
     FieldDto getSelectedField(String fieldId);
     List<FieldDto> getAllFields();
     String generateFieldId();
+    void uploadFieldImage(String fieldId, String image1, String image2);
 }

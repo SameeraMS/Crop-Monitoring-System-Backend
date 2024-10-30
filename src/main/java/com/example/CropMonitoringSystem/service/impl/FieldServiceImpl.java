@@ -76,4 +76,15 @@ public class FieldServiceImpl implements FieldService {
         return String.format("F00-%03d", newFieldId);
 
     }
+
+    @Override
+    public void uploadFieldImage(String fieldId, String image1, String image2) {
+        Optional<FieldEntity> searched = fieldDao.findById(fieldId);
+        if (searched.isPresent()) {
+            searched.get().setImage1(image1);
+            searched.get().setImage2(image2);
+        } else {
+            throw new NotFoundException("Field +" + fieldId + " not found");
+        }
+    }
 }
