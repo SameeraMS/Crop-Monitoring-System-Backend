@@ -1,10 +1,12 @@
 package com.example.CropMonitoringSystem.controller;
 
 import com.example.CropMonitoringSystem.dto.impl.UserDto;
+import com.example.CropMonitoringSystem.entity.Role;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,34 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Value("${administrator.code}")
+    private String adminCode;
+    @Value("${manager.code}")
+    private String managerCode;
+    @Value("${scientist.code}")
+    private String scientistCode;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveUser(@RequestBody UserDto userDto) {
+
+        if (userDto.getRole().equals(Role.ADMINISTRATIVE)) {
+            if (!userDto.getRoleCode().equals(adminCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (userDto.getRole().equals(Role.MANAGER)) {
+            if (!userDto.getRoleCode().equals(managerCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (userDto.getRole().equals(Role.SCIENTIST)) {
+            if (!userDto.getRoleCode().equals(scientistCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
         try {
             userService.saveUser(userDto);
             return new ResponseEntity<>(HttpStatus.CREATED);
