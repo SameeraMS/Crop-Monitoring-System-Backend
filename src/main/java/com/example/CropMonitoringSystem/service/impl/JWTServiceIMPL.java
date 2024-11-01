@@ -48,7 +48,8 @@ public class JWTServiceIMPL implements JWTService {
 
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
-        return false;
+        var username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     @Override
@@ -75,5 +76,13 @@ public class JWTServiceIMPL implements JWTService {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token,Claims::getExpiration);
     }
 }

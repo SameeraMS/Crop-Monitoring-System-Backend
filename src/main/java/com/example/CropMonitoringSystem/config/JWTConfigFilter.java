@@ -38,7 +38,7 @@ public class JWTConfigFilter extends OncePerRequestFilter {
             var userDetails =
                     userService.userDetailsService().loadUserByUsername(userEmail);
             if(jwtService.validateToken(extractedJWTToken, userDetails)) {
-                //add user to the securoty context
+                //add user to the security context
                 SecurityContext emptyContext =
                         SecurityContextHolder.createEmptyContext();
                 var authToken =
