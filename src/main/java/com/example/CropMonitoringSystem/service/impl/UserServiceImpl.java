@@ -4,14 +4,15 @@ import com.example.CropMonitoringSystem.dao.UserDao;
 import com.example.CropMonitoringSystem.dto.impl.UserDto;
 import com.example.CropMonitoringSystem.entity.impl.UserEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
+import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.UserService;
 import com.example.CropMonitoringSystem.util.Mapping;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +65,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUsers() {
         return mapping.toUserDtoList(userDao.findAll());
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return userName ->
+                (UserDetails) userDao.findById(userName)
+                        .orElseThrow(()-> new NotFoundException("User Not Found"));
     }
 
 }
