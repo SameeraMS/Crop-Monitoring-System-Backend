@@ -18,8 +18,9 @@ public class LogController {
     private LogService logService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveLog(LogDto logDto) {
+    public ResponseEntity<Void> saveLog(@RequestBody LogDto logDto) {
         try {
+            System.out.println(logDto);
             logService.saveLog(logDto);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (DataPersistException e) {

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 public class LogDto implements SuperDto {
     private String logId;
-    private String logDate;
+    private Date logDate;
     private String logDetails;
     private String image;
     private List<FieldDto> fields;

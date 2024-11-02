@@ -3,6 +3,7 @@ package com.example.CropMonitoringSystem.entity.impl;
 import com.example.CropMonitoringSystem.entity.Gender;
 import com.example.CropMonitoringSystem.entity.Role;
 import com.example.CropMonitoringSystem.entity.SuperEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,13 +50,25 @@ public class StaffEntity implements SuperEntity {
     )
     private List<FieldEntity> fields;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "staff",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<VehicleEntity> vehicles;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "staff",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<EquipmentEntity> equipments;
 
     @ManyToOne
     @JoinColumn(name = "logId")
     private LogEntity log;
+
+    public void addField(FieldEntity field){
+        fields.add(field);
+        field.getStaffs().add(this);
+    }
+
+    public void removeField(FieldEntity field){
+        fields.remove(field);
+        field.getStaffs().remove(this);
+    }
 }

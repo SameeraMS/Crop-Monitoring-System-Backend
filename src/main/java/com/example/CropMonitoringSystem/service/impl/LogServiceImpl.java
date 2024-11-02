@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void saveLog(LogDto logDto) {
+        logDto.setLogId(generateLogId());
         LogEntity save = logDao.save(mapping.toLogEntity(logDto));
         if (save == null) {
             throw new DataPersistException("Log not saved");
@@ -33,7 +35,10 @@ public class LogServiceImpl implements LogService {
     public void updateLog(String logId, LogDto logDto) {
         Optional<LogEntity> searched = logDao.findById(logId);
         if (searched.isPresent()) {
-            logDao.save(mapping.toLogEntity(logDto));
+            LogEntity logEntity = searched.get();
+            logEntity.setLogDate((Date) logDto.getLogDate());
+            logEntity.setLogDetails(logDto.getLogDetails());
+            logDao.save(logEntity);
         } else {
             throw new DataPersistException("Log +" + logId + " not found");
         }

@@ -2,10 +2,12 @@ package com.example.CropMonitoringSystem.service.impl;
 
 import com.example.CropMonitoringSystem.dao.EquipmentDao;
 import com.example.CropMonitoringSystem.dto.impl.EquipmentDto;
+import com.example.CropMonitoringSystem.entity.EquipmentType;
 import com.example.CropMonitoringSystem.entity.impl.EquipmentEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.EquipmentService;
+import com.example.CropMonitoringSystem.service.FieldService;
 import com.example.CropMonitoringSystem.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,14 @@ public class EquipmentServiceImpl implements EquipmentService {
     private EquipmentDao equipmentDao;
     @Autowired
     private Mapping mapping;
+    @Autowired
+    private FieldService fieldService;
+    @Autowired
+    private StaffServiceImpl staffService;
 
     @Override
     public void saveEquipment(EquipmentDto equipmentDto) {
+        equipmentDto.setEquipmentId(generateEquipmentId());
         EquipmentEntity save = equipmentDao.save(mapping.toEquipmentEntity(equipmentDto));
         if (save == null) {
             throw new DataPersistException("Equipment not saved");
@@ -35,7 +42,13 @@ public class EquipmentServiceImpl implements EquipmentService {
         Optional<EquipmentEntity> seached = equipmentDao.findById(equipmentId);
 
         if (seached.isPresent()) {
-            equipmentDao.save(mapping.toEquipmentEntity(equipmentDto));
+            EquipmentEntity equipmentEntity = seached.get();
+            equipmentEntity.setEquipmentName(equipmentDto.getEquipmentName());
+            equipmentEntity.setEquipmentType(EquipmentType.valueOf(equipmentDto.getEquipmentType()));
+            equipmentEntity.setEquipmentStatus(equipmentDto.getEquipmentStatus());
+            equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
+            equipmentEntity.setField(mapping.toFieldEntity(fieldService.getSelectedField(equipmentDto.getFieldId())));
+            equipmentDao.save(equipmentEntity);
         } else {
             throw new NotFoundException("Equipment +" + equipmentId + " not found");
         }

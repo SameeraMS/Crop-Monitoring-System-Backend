@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,7 +14,7 @@ import java.util.List;
 public class FieldDto implements SuperDto {
     private String fieldId;
     private String fieldName;
-    private String fieldLocation;
+    private Point fieldLocation;
     private String fieldSize;
     private List<CropDto> crops;
     private List<StaffDto> staffs;

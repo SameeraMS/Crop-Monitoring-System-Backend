@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,8 +19,8 @@ public class StaffDto implements SuperDto {
     private String lastName;
     private String designation;
     private Gender gender;
-    private String joinedDate;
-    private String dob;
+    private Date joinedDate;
+    private Date dob;
     private String buildingNo;
     private String lane;
     private String city;

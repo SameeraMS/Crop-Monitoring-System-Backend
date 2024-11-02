@@ -6,6 +6,7 @@ import com.example.CropMonitoringSystem.entity.impl.FieldEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.FieldService;
+import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,12 @@ public class FieldServiceImpl implements FieldService {
     private FieldDao fieldDao;
     @Autowired
     private Mapping mapping;
+    @Autowired
+    private LogService logService;
 
     @Override
     public void saveField(FieldDto fieldDto) {
+        fieldDto.setFieldId(generateFieldId());
         FieldEntity save = fieldDao.save(mapping.toFieldEntity(fieldDto));
         if (save == null) {
             throw new DataPersistException("Field not saved");
@@ -34,7 +38,14 @@ public class FieldServiceImpl implements FieldService {
     public void updateField(String fieldId, FieldDto fieldDto) {
         Optional<FieldEntity> searched = fieldDao.findById(fieldId);
         if (searched.isPresent()) {
-            fieldDao.save(mapping.toFieldEntity(fieldDto));
+            FieldEntity fieldEntity = searched.get();
+            fieldEntity.setFieldId(fieldDto.getFieldId());
+            fieldEntity.setFieldName(fieldDto.getFieldName());
+            fieldEntity.setFieldLocation(fieldDto.getFieldLocation());
+            fieldEntity.setFieldSize(Double.valueOf(fieldDto.getFieldSize()));
+            fieldEntity.setImage1(fieldDto.getImage1());
+            fieldEntity.setImage2(fieldDto.getImage2());
+            fieldDao.save(fieldEntity);
         } else {
             throw new NotFoundException("Field +" + fieldId + " not found");
         }

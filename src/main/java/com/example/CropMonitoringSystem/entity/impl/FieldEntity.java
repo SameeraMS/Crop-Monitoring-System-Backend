@@ -1,6 +1,7 @@
 package com.example.CropMonitoringSystem.entity.impl;
 
 import com.example.CropMonitoringSystem.entity.SuperEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,9 +22,11 @@ public class FieldEntity implements SuperEntity {
     private Point fieldLocation;
     private Double fieldSize;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "field",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CropEntity> crops;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "fields")
     private List<StaffEntity> staffs;
 
@@ -33,6 +36,7 @@ public class FieldEntity implements SuperEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String image2;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "field",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<EquipmentEntity> equipments;
 

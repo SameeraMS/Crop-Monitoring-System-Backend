@@ -21,7 +21,7 @@ public class FieldController {
     private FieldService fieldService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveField(FieldDto fieldDto) {
+    public ResponseEntity<Void> saveField(@RequestBody FieldDto fieldDto) {
         try {
             fieldService.saveField(fieldDto);
             return new ResponseEntity<>(HttpStatus.CREATED);

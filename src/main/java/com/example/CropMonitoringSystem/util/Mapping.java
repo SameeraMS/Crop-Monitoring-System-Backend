@@ -17,7 +17,9 @@ public class Mapping {
 
     //for crop
     public CropDto toCropDto(CropEntity cropEntity){return modelMapper.map(cropEntity, CropDto.class);}
-    public CropEntity toCropEntity(CropDto cropDto){return modelMapper.map(cropDto, CropEntity.class);}
+    public CropEntity toCropEntity(CropDto cropDto){
+        return modelMapper.map(cropDto, CropEntity.class);
+    }
     public List<CropDto> toCropDtoList(List<CropEntity> cropEntities){
         return cropEntities.stream().map(this::toCropDto).toList();
     }
