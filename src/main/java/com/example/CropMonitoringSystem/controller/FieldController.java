@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,11 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/fields")
+@CrossOrigin
 public class FieldController {
     @Autowired
     private FieldService fieldService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> saveField(@RequestBody FieldDto fieldDto) {
         try {
             fieldService.saveField(fieldDto);
@@ -35,6 +38,7 @@ public class FieldController {
     }
 
     @PostMapping(value = "/{fieldId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> uploadFieldImage(
             @PathVariable("fieldId") String fieldId,
             @RequestParam("image1") MultipartFile image1,
@@ -61,6 +65,7 @@ public class FieldController {
     }
 
     @PutMapping(value = "/{fieldId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateField(@PathVariable("fieldId") String fieldId, FieldDto fieldDto) {
         try {
             fieldService.updateField(fieldId, fieldDto);
@@ -75,6 +80,7 @@ public class FieldController {
     }
 
     @DeleteMapping("/{fieldId}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteField(@PathVariable("fieldId") String fieldId) {
         try {
             fieldService.deleteField(fieldId);

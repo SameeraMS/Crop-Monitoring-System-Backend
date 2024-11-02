@@ -7,15 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/equipments")
+@CrossOrigin
 public class EquipmentController {
     @Autowired
     private EquipmentService equipmentService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> saveEquipment(@RequestBody EquipmentDto equipmentDto) {
         try {
             equipmentService.saveEquipment(equipmentDto);
@@ -30,6 +33,7 @@ public class EquipmentController {
     }
 
     @PutMapping(value = "/{equipmentId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateEquipment(@PathVariable("equipmentId") String equipmentId, @RequestBody EquipmentDto equipmentDto) {
         try {
             equipmentService.updateEquipment(equipmentId, equipmentDto);
@@ -44,6 +48,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/{equipmentId}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("equipmentId") String equipmentId) {
         try {
             equipmentService.deleteEquipment(equipmentId);

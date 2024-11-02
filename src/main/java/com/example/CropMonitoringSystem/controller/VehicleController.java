@@ -8,17 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/vehicles")
+@CrossOrigin
 public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> saveVehicle(@RequestBody VehicleDto vehicleDto) {
         try {
             vehicleService.saveVehicle(vehicleDto);
@@ -33,6 +36,7 @@ public class VehicleController {
     }
 
     @PutMapping(value = "/{vehicleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> updateVehicle(@PathVariable("vehicleId") String vehicleId, @RequestBody VehicleDto vehicleDto) {
         try {
             vehicleDto.setVehicleId(vehicleId);
@@ -48,6 +52,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/{vehicleId}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> deleteVehicle(@PathVariable("vehicleId") String vehicleId) {
         try {
             vehicleService.deleteVehicle(vehicleId);

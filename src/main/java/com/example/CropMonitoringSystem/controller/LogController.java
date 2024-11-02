@@ -7,17 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/logs")
+@CrossOrigin
 public class LogController {
     @Autowired
     private LogService logService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> saveLog(@RequestBody LogDto logDto) {
         try {
             System.out.println(logDto);
@@ -33,6 +36,7 @@ public class LogController {
     }
 
     @PutMapping(value = "/{logId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateLog(@PathVariable("logId") String logId, LogDto logDto) {
         try {
             logService.updateLog(logId, logDto);
@@ -47,6 +51,7 @@ public class LogController {
     }
 
     @DeleteMapping("/{logId}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteLog(@PathVariable("logId") String logId) {
         try {
             logService.deleteLog(logId);
@@ -58,11 +63,13 @@ public class LogController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public List<LogDto> getAllLogs() {
         return logService.getAllLogs();
     }
 
     @GetMapping(value = "/{logId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public LogDto getSelectedLog(@PathVariable("logId") String logId) {
         return logService.getSelectedLog(logId);
     }
