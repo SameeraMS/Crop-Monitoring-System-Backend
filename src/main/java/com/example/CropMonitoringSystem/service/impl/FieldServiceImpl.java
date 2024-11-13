@@ -45,6 +45,11 @@ public class FieldServiceImpl implements FieldService {
             fieldEntity.setFieldSize(Double.valueOf(fieldDto.getFieldSize()));
             fieldEntity.setImage1(fieldDto.getImage1());
             fieldEntity.setImage2(fieldDto.getImage2());
+            if (fieldEntity.getLog() != null) {
+                fieldEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(fieldDto.getLogId())));
+            } else {
+                fieldEntity.setLog(null);
+            }
             fieldDao.save(fieldEntity);
         } else {
             throw new NotFoundException("Field +" + fieldId + " not found");

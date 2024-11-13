@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -16,5 +18,5 @@ public class CropDto implements SuperDto {
     private String category;
     private String cropSeason;
     private String fieldId;
-    private String logId;
+    private List<LogDto> logs;
 }

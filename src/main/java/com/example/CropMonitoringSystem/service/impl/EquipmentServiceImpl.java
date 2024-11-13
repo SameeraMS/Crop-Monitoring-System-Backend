@@ -46,8 +46,16 @@ public class EquipmentServiceImpl implements EquipmentService {
             equipmentEntity.setEquipmentName(equipmentDto.getEquipmentName());
             equipmentEntity.setEquipmentType(EquipmentType.valueOf(equipmentDto.getEquipmentType()));
             equipmentEntity.setEquipmentStatus(equipmentDto.getEquipmentStatus());
-            equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
-            equipmentEntity.setField(mapping.toFieldEntity(fieldService.getSelectedField(equipmentDto.getFieldId())));
+            if (equipmentDto.getStaffId() != null) {
+                equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
+            } else {
+                equipmentEntity.setStaff(null);
+            }
+            if (equipmentDto.getFieldId() != null) {
+                equipmentEntity.setField(mapping.toFieldEntity(fieldService.getSelectedField(equipmentDto.getFieldId())));
+            } else {
+                equipmentEntity.setField(null);
+            }
             equipmentDao.save(equipmentEntity);
         } else {
             throw new NotFoundException("Equipment +" + equipmentId + " not found");

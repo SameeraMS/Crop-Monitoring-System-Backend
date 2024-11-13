@@ -4,6 +4,7 @@ import com.example.CropMonitoringSystem.dao.LogDao;
 import com.example.CropMonitoringSystem.dto.impl.LogDto;
 import com.example.CropMonitoringSystem.entity.impl.LogEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
+import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,5 +80,17 @@ public class LogServiceImpl implements LogService {
         int newLogId = Integer.parseInt(maxLogId.replace("L00-", "")) + 1;
         return String.format("L00-%03d", newLogId);
 
+    }
+
+    @Override
+    public void uploadImage(String logId, String image) {
+        Optional<LogEntity> fetchedLog = logDao.findById(logId);
+        if (fetchedLog.isPresent()) {
+            LogEntity logEntity = fetchedLog.get();
+            logEntity.setImage(image);
+            logDao.save(logEntity);
+        } else {
+            throw new NotFoundException("Log id not found"+ logId);
+        }
     }
 }

@@ -58,7 +58,11 @@ public class StaffServiceImpl implements StaffService {
             staffEntity.setJoinedDate(staffDto.getJoinedDate());
             staffEntity.setLane(staffDto.getLane());
             staffEntity.setDob(staffDto.getDob());
-            staffEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(staffDto.getLogId())));
+            if (staffDto.getLogId() != null) {
+                staffEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(staffDto.getLogId())));
+            } else {
+                staffEntity.setLog(null);
+            }
 
             staffDao.save(staffEntity);
         } else {

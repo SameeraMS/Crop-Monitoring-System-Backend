@@ -11,4 +11,5 @@ public interface LogService {
     LogDto getSelectedLog(String logId);
     List<LogDto> getAllLogs();
     String generateLogId();
+    void uploadImage(String logId, String image);
 }
