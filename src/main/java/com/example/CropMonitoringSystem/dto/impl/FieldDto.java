@@ -17,7 +17,6 @@ public class FieldDto implements SuperDto {
     private Point fieldLocation;
     private String fieldSize;
     private List<CropDto> crops;
-    private List<StaffDto> staffs;
     private String image1;
     private String image2;
     private List<EquipmentDto> equipments;

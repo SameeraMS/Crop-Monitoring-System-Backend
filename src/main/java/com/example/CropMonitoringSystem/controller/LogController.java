@@ -3,7 +3,6 @@ package com.example.CropMonitoringSystem.controller;
 import com.example.CropMonitoringSystem.dto.impl.LogDto;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.LogService;
-import com.example.CropMonitoringSystem.util.AppUtil;
 import com.example.CropMonitoringSystem.util.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +48,8 @@ public class LogController {
             @RequestPart("image") String image
     ) {
         if (logId.matches(Regex.LOG_ID)) {
-            byte[] observedImageBytes = image.getBytes();
-            String convertedImageToBase64 = AppUtil.convertImageToBase64(observedImageBytes);
-            logService.uploadImage(logId, convertedImageToBase64);
+            System.out.println(image);
+            logService.uploadImage(logId, image);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

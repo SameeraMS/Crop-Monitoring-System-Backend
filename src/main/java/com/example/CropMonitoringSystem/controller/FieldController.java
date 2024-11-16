@@ -3,7 +3,6 @@ package com.example.CropMonitoringSystem.controller;
 import com.example.CropMonitoringSystem.dto.impl.FieldDto;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.FieldService;
-import com.example.CropMonitoringSystem.util.AppUtil;
 import com.example.CropMonitoringSystem.util.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/fields")
@@ -24,10 +24,15 @@ public class FieldController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
-    public ResponseEntity<Void> saveField(@RequestBody FieldDto fieldDto) {
+    public ResponseEntity<Map<String, String>> saveField(@RequestBody FieldDto fieldDto) {
         try {
+            String fieldId = fieldService.generateFieldId();
             fieldService.saveField(fieldDto);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("fieldId", fieldId);
+
+            return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
         } catch (DataPersistException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -37,20 +42,16 @@ public class FieldController {
         }
     }
 
-    @PostMapping(value = "/{fieldId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> uploadFieldImage(
-            @PathVariable("fieldId") String fieldId,
-            @RequestParam("image1") MultipartFile image1,
-            @RequestParam("image2") MultipartFile image2
+            @RequestPart("fieldId") String fieldId,
+            @RequestPart("image1") String image1,
+            @RequestPart("image2") String image2
     ) {
         try {
             if (fieldId.matches(Regex.FIELD_ID)) {
-                byte[] image1Bytes = image1.getBytes();
-                String image1Base64 = AppUtil.convertImageToBase64(image1Bytes);
-                byte[] image2Bytes = image2.getBytes();
-                String image2Base64 = AppUtil.convertImageToBase64(image2Bytes);
-                fieldService.uploadFieldImage(fieldId, image1Base64, image2Base64);
+                fieldService.uploadFieldImage(fieldId, image1, image2);
                 return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -66,7 +67,7 @@ public class FieldController {
 
     @PutMapping(value = "/{fieldId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
-    public ResponseEntity<Void> updateField(@PathVariable("fieldId") String fieldId, FieldDto fieldDto) {
+    public ResponseEntity<Void> updateField(@PathVariable("fieldId") String fieldId,@RequestBody FieldDto fieldDto) {
         try {
             fieldService.updateField(fieldId, fieldDto);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

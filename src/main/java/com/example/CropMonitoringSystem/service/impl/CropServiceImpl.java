@@ -1,6 +1,8 @@
 package com.example.CropMonitoringSystem.service.impl;
 
 import com.example.CropMonitoringSystem.dao.CropDao;
+import com.example.CropMonitoringSystem.dao.FieldDao;
+import com.example.CropMonitoringSystem.dao.LogDao;
 import com.example.CropMonitoringSystem.dto.impl.CropDto;
 import com.example.CropMonitoringSystem.entity.impl.CropEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
@@ -20,6 +22,10 @@ public class CropServiceImpl implements CropService {
     @Autowired
     private CropDao cropDao;
     @Autowired
+    private FieldDao fieldDao;
+    @Autowired
+    private LogDao logDao;
+    @Autowired
     private Mapping mapping;
 
     @Override
@@ -35,7 +41,18 @@ public class CropServiceImpl implements CropService {
     public void updateCrop(String cropId, CropDto cropDto) {
         Optional<CropEntity> searched = cropDao.findById(cropId);
         if (searched.isPresent()) {
-            cropDao.save(mapping.toCropEntity(cropDto));
+            CropEntity cropEntity = searched.get();
+            cropEntity.setCommonName(cropDto.getCommonName());
+            cropEntity.setScientificName(cropDto.getScientificName());
+            cropEntity.setCategory(cropDto.getCategory());
+            cropEntity.setCropSeason(cropDto.getCropSeason());
+            if (cropDto.getFieldId() != null) {
+                cropEntity.setField(fieldDao.getReferenceById(cropDto.getFieldId()));
+            } else {
+                cropEntity.setField(null);
+            }
+
+            cropDao.save(cropEntity);
         } else {
             throw new NotFoundException("Crop +" + cropId + " not found");
         }

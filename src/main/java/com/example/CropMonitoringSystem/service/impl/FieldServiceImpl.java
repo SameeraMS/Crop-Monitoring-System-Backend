@@ -39,12 +39,9 @@ public class FieldServiceImpl implements FieldService {
         Optional<FieldEntity> searched = fieldDao.findById(fieldId);
         if (searched.isPresent()) {
             FieldEntity fieldEntity = searched.get();
-            fieldEntity.setFieldId(fieldDto.getFieldId());
             fieldEntity.setFieldName(fieldDto.getFieldName());
             fieldEntity.setFieldLocation(fieldDto.getFieldLocation());
             fieldEntity.setFieldSize(Double.valueOf(fieldDto.getFieldSize()));
-            fieldEntity.setImage1(fieldDto.getImage1());
-            fieldEntity.setImage2(fieldDto.getImage2());
             if (fieldEntity.getLog() != null) {
                 fieldEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(fieldDto.getLogId())));
             } else {

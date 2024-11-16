@@ -11,6 +11,7 @@ import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.service.StaffService;
 import com.example.CropMonitoringSystem.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
