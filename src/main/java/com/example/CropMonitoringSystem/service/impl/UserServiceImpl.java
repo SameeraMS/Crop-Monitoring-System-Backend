@@ -7,6 +7,7 @@ import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.UserService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(UserDto userDto) {
         UserEntity save = userDao.save(mapping.toUserEntity(userDto));
         if (save == null) {
+            log.error("User not saved");
             throw new DataPersistException("User not saved");
         }
     }
@@ -39,6 +42,7 @@ public class UserServiceImpl implements UserService {
         if (searched.isPresent()) {
             userDao.save(mapping.toUserEntity(userDto));
         } else {
+            log.error("User +" + userId + " not found");
             throw new DataPersistException("User +" + userId + " not found");
         }
     }
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
         if (userDao.existsById(userId)) {
             userDao.deleteById(userId);
         } else {
+            log.error("User +" + userId + " not found");
             throw new DataPersistException("User +" + userId + " not found");
         }
     }
@@ -58,6 +63,7 @@ public class UserServiceImpl implements UserService {
         if (searched.isPresent()) {
             return mapping.toUserDto(searched.get());
         } else {
+            log.error("User +" + userId + " not found");
             throw new DataPersistException("User +" + userId + " not found");
         }
     }

@@ -7,6 +7,7 @@ import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class LogServiceImpl implements LogService {
     @Autowired
     private LogDao logDao;
@@ -28,6 +30,7 @@ public class LogServiceImpl implements LogService {
         logDto.setLogId(generateLogId());
         LogEntity save = logDao.save(mapping.toLogEntity(logDto));
         if (save == null) {
+            log.error("Log not saved");
             throw new DataPersistException("Log not saved");
         }
     }
@@ -41,6 +44,7 @@ public class LogServiceImpl implements LogService {
             logEntity.setLogDetails(logDto.getLogDetails());
             logDao.save(logEntity);
         } else {
+            log.error("Log +" + logId + " not found");
             throw new DataPersistException("Log +" + logId + " not found");
         }
     }
@@ -50,6 +54,7 @@ public class LogServiceImpl implements LogService {
         if (logDao.existsById(logId)) {
             logDao.deleteById(logId);
         } else {
+            log.error("Log +" + logId + " not found");
             throw new DataPersistException("Log +" + logId + " not found");
         }
     }
@@ -60,6 +65,7 @@ public class LogServiceImpl implements LogService {
         if (searched.isPresent()) {
             return mapping.toLogDto(searched.get());
         } else {
+            log.error("Log +" + logId + " not found");
             throw new DataPersistException("Log +" + logId + " not found");
         }
     }
@@ -90,6 +96,7 @@ public class LogServiceImpl implements LogService {
             logEntity.setImage(image);
             logDao.save(logEntity);
         } else {
+            log.error("Log id not found"+ logId);
             throw new NotFoundException("Log id not found"+ logId);
         }
     }

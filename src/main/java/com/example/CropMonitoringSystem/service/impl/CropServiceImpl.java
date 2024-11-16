@@ -9,6 +9,7 @@ import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.CropService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class CropServiceImpl implements CropService {
     @Autowired
     private CropDao cropDao;
@@ -33,6 +35,7 @@ public class CropServiceImpl implements CropService {
         cropDto.setCropId(generateCropId());
         CropEntity save = cropDao.save(mapping.toCropEntity(cropDto));
         if (save == null) {
+            log.error("Crop not saved");
             throw new DataPersistException("Crop not saved");
         }
     }
@@ -50,10 +53,12 @@ public class CropServiceImpl implements CropService {
                 cropEntity.setField(fieldDao.getReferenceById(cropDto.getFieldId()));
             } else {
                 cropEntity.setField(null);
+                log.info("Field is null for crop " + cropId);
             }
 
             cropDao.save(cropEntity);
         } else {
+            log.error("Crop +" + cropId + " not found");
             throw new NotFoundException("Crop +" + cropId + " not found");
         }
 
@@ -64,6 +69,7 @@ public class CropServiceImpl implements CropService {
         if (cropDao.existsById(cropId)) {
             cropDao.deleteById(cropId);
         } else {
+            log.error("Crop +" + cropId + " not found");
             throw new NotFoundException("Crop +" + cropId + " not found");
         }
 
@@ -75,6 +81,7 @@ public class CropServiceImpl implements CropService {
         if (searched.isPresent()) {
             return mapping.toCropDto(searched.get());
         } else {
+            log.error("Crop +" + cropId + " not found");
             throw new NotFoundException("Crop +" + cropId + " not found");
         }
     }
@@ -105,6 +112,7 @@ public class CropServiceImpl implements CropService {
             searched.get().setCropImg(image);
             cropDao.save(searched.get());
         } else {
+            log.error("Crop +" + cropId + " not found");
             throw new NotFoundException("Crop +" + cropId + " not found");
         }
     }

@@ -9,6 +9,7 @@ import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.EquipmentService;
 import com.example.CropMonitoringSystem.service.FieldService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class EquipmentServiceImpl implements EquipmentService {
     @Autowired
     private EquipmentDao equipmentDao;
@@ -33,6 +35,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipmentDto.setEquipmentId(generateEquipmentId());
         EquipmentEntity save = equipmentDao.save(mapping.toEquipmentEntity(equipmentDto));
         if (save == null) {
+            log.error("Equipment not saved");
             throw new DataPersistException("Equipment not saved");
         }
     }
@@ -50,14 +53,17 @@ public class EquipmentServiceImpl implements EquipmentService {
                 equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
             } else {
                 equipmentEntity.setStaff(null);
+                log.info("staff is null in updateEquipment id: " + equipmentId);
             }
             if (equipmentDto.getFieldId() != null) {
                 equipmentEntity.setField(mapping.toFieldEntity(fieldService.getSelectedField(equipmentDto.getFieldId())));
             } else {
                 equipmentEntity.setField(null);
+                log.info("field is null in updateEquipment id: " + equipmentId);
             }
             equipmentDao.save(equipmentEntity);
         } else {
+            log.error("Equipment +" + equipmentId + " not found");
             throw new NotFoundException("Equipment +" + equipmentId + " not found");
         }
     }
@@ -67,6 +73,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         if (equipmentDao.existsById(equipmentId)) {
             equipmentDao.deleteById(equipmentId);
         } else {
+            log.error("Equipment +" + equipmentId + " not found");
             throw new NotFoundException("Equipment +" + equipmentId + " not found");
         }
     }
@@ -77,6 +84,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         if (searched.isPresent()) {
             return mapping.toEquipmentDto(searched.get());
         } else {
+            log.error("Equipment +" + equipmentId + " not found");
             throw new NotFoundException("Equipment +" + equipmentId + " not found");
         }
     }

@@ -8,6 +8,7 @@ import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.FieldService;
 import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class FieldServiceImpl implements FieldService {
     @Autowired
     private FieldDao fieldDao;
@@ -30,6 +32,7 @@ public class FieldServiceImpl implements FieldService {
         fieldDto.setFieldId(generateFieldId());
         FieldEntity save = fieldDao.save(mapping.toFieldEntity(fieldDto));
         if (save == null) {
+            log.error("Field not saved");
             throw new DataPersistException("Field not saved");
         }
     }
@@ -46,9 +49,11 @@ public class FieldServiceImpl implements FieldService {
                 fieldEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(fieldDto.getLogId())));
             } else {
                 fieldEntity.setLog(null);
+                log.info("Log is null in updateField id: " + fieldId);
             }
             fieldDao.save(fieldEntity);
         } else {
+            log.error("Field not found for updateField id: " + fieldId);
             throw new NotFoundException("Field +" + fieldId + " not found");
         }
     }
@@ -58,6 +63,7 @@ public class FieldServiceImpl implements FieldService {
         if (fieldDao.existsById(fieldId)) {
             fieldDao.deleteById(fieldId);
         } else {
+            log.error("Field not found for deleteField id: " + fieldId);
             throw new NotFoundException("Field +" + fieldId + " not found");
         }
     }
@@ -68,6 +74,7 @@ public class FieldServiceImpl implements FieldService {
         if (searched.isPresent()) {
             return mapping.toFieldDto(searched.get());
         } else {
+            log.error("Field not found for getSelectedField id: " + fieldId);
             throw new NotFoundException("Field +" + fieldId + " not found");
         }
     }
@@ -97,6 +104,7 @@ public class FieldServiceImpl implements FieldService {
             searched.get().setImage1(image1);
             searched.get().setImage2(image2);
         } else {
+            log.error("Field not found for uploadFieldImage id: " + fieldId);
             throw new NotFoundException("Field +" + fieldId + " not found");
         }
     }

@@ -10,6 +10,7 @@ import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.LogService;
 import com.example.CropMonitoringSystem.service.StaffService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffDao staffDao;
@@ -35,6 +37,7 @@ public class StaffServiceImpl implements StaffService {
         staffDto.setStaffId(generateStaffId());
         StaffEntity save = staffDao.save(mapping.toStaffEntity(staffDto));
         if (save == null) {
+            log.error("Staff not saved");
             throw new DataPersistException("Staff not saved");
         }
     }
@@ -63,10 +66,12 @@ public class StaffServiceImpl implements StaffService {
                 staffEntity.setLog(mapping.toLogEntity(logService.getSelectedLog(staffDto.getLogId())));
             } else {
                 staffEntity.setLog(null);
+                log.info("Log is null in updateStaff id: " + staffId);
             }
 
             staffDao.save(staffEntity);
         } else {
+            log.error("Staff +" + staffId + " not found");
             throw new NotFoundException("Staff +" + staffId + " not found");
         }
     }
@@ -76,6 +81,7 @@ public class StaffServiceImpl implements StaffService {
         if (staffDao.existsById(staffId)) {
             staffDao.deleteById(staffId);
         } else {
+            log.error("Staff +" + staffId + " not found");
             throw new NotFoundException("Staff +" + staffId + " not found");
         }
     }
@@ -86,6 +92,7 @@ public class StaffServiceImpl implements StaffService {
         if (searched.isPresent()) {
             return mapping.toStaffDto(searched.get());
         } else {
+            log.error("Staff +" + staffId + " not found");
             throw new NotFoundException("Staff +" + staffId + " not found");
         }
     }

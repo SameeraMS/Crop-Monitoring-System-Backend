@@ -1,11 +1,13 @@
 package com.example.CropMonitoringSystem.service.impl;
 
+import com.example.CropMonitoringSystem.dao.StaffDao;
 import com.example.CropMonitoringSystem.dao.VehicleDao;
 import com.example.CropMonitoringSystem.dto.impl.VehicleDto;
 import com.example.CropMonitoringSystem.entity.impl.VehicleEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.VehicleService;
 import com.example.CropMonitoringSystem.util.Mapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,12 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class VehicleServiceImpl implements VehicleService {
     @Autowired
     private VehicleDao vehicleDao;
+    @Autowired
+    private StaffDao staffDao;
     @Autowired
     private Mapping mapping;
 
@@ -26,6 +31,7 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleDto.setVehicleId(generateVehicleId());
         VehicleEntity save = vehicleDao.save(mapping.toVehicleEntity(vehicleDto));
         if (save == null) {
+            log.error("Vehicle not saved");
             throw new DataPersistException("Vehicle not saved");
         }
     }
@@ -35,8 +41,15 @@ public class VehicleServiceImpl implements VehicleService {
         Optional<VehicleEntity> searched = vehicleDao.findById(vehicleId);
 
         if (searched.isPresent()) {
-            vehicleDao.save(mapping.toVehicleEntity(vehicleDto));
+            VehicleEntity vehicleEntity = searched.get();
+            if (vehicleDto.getStaffId() != null) {
+                vehicleEntity.setStaff(staffDao.getReferenceById(vehicleDto.getStaffId()));
+            } else {
+                vehicleEntity.setStaff(null);
+            }
+            vehicleDao.save(vehicleEntity);
         } else {
+            log.error("Vehicle +" + vehicleId + " not found");
             throw new DataPersistException("Vehicle +" + vehicleId + " not found");
         }
     }
@@ -46,6 +59,7 @@ public class VehicleServiceImpl implements VehicleService {
         if (vehicleDao.existsById(vehicleId)) {
             vehicleDao.deleteById(vehicleId);
         } else {
+            log.error("Vehicle +" + vehicleId + " not found");
             throw new DataPersistException("Vehicle +" + vehicleId + " not found");
         }
     }
@@ -56,6 +70,7 @@ public class VehicleServiceImpl implements VehicleService {
         if (searched.isPresent()) {
             return mapping.toVehicleDto(searched.get());
         } else {
+            log.error("Vehicle +" + vehicleId + " not found");
             throw new DataPersistException("Vehicle +" + vehicleId + " not found");
         }
     }
