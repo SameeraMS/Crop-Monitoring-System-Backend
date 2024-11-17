@@ -42,57 +42,6 @@ public class Mapping {
     public StaffDto toStaffDto(StaffEntity staffEntity){return modelMapper.map(staffEntity, StaffDto.class);}
     public StaffEntity toStaffEntity(StaffDto staffDto){return modelMapper.map(staffDto, StaffEntity.class);}
     public List<StaffDto> toStaffDtoList(List<StaffEntity> staffList){
-        /*return staffList.stream().map(staff -> {
-            StaffDto staffDTO = new StaffDto();
-            staffDTO.setStaffId(staff.getStaffId());
-            staffDTO.setFirstName(staff.getFirstName());
-            staffDTO.setLastName(staff.getLastName());
-            staffDTO.setDesignation(staff.getDesignation());
-            staffDTO.setGender(staff.getGender());
-            staffDTO.setJoinedDate(String.valueOf(staff.getJoinedDate()));
-            staffDTO.setState(staff.getState());
-            staffDTO.setBuildingNo(staff.getBuildingNo());
-            staffDTO.setCity(staff.getCity());
-            staffDTO.setPostalcode(staff.getPostalcode());
-            staffDTO.setLane(staff.getLane());
-            staffDTO.setContactNo(staff.getContactNo());
-            staffDTO.setEmail(staff.getEmail());
-            staffDTO.setRole(staff.getRole());
-            staffDTO.setFields(
-                    staff.getFields().stream().map(field -> FieldDto.builder()
-                            .fieldId(field.getFieldId())
-                            .fieldName(field.getFieldName())
-                            .image1(field.getImage1())
-                            .image2(field.getImage2())
-                            .fieldLocation(String.valueOf(field.getFieldLocation()))
-                            .fieldSize(String.valueOf(field.getFieldSize()))
-                            .crops(field.getCrops().stream().map(crop -> CropDto.builder()
-                                    .cropId(crop.getCropId())
-                                    .commonName(crop.getCommonName())
-                                    .scientificName(crop.getScientificName())
-                                    .cropImg(crop.getCropImg())
-                                    .category(crop.getCategory())
-                                    .cropSeason(crop.getCropSeason())
-                                    .fieldId(crop.getField().getFieldId())
-                                    .logId(crop.getLog().getLogId())
-                                    .build()).toList())
-                            .build()).toList()
-            );
-            staffDTO.setVehicles(
-                    staff.getVehicles().stream().map(vehicle -> VehicleDto.builder()
-                            .vehicleId(vehicle.getVehicleId())
-                            .licenNo(vehicle.getLicenNo())
-                            .category(vehicle.getCategory())
-                            .fuelType(vehicle.getFuelType())
-                            .vehicleStatus(vehicle.getVehicleStatus())
-                            .remark(vehicle.getRemark())
-                            .staffId(vehicle.getStaff().getStaffId())
-                            .build()).toList());
-            staffDTO.setEquipments(toEquipmentDtoList(staff.getEquipments()));
-            staffDTO.setLogId(staff.getLog().getLogId());
-            return staffDTO;
-        }).toList();*/
-
         return staffList.stream().map(this::toStaffDto).toList();
     }
 

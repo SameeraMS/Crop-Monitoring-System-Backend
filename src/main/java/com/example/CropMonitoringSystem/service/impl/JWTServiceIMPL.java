@@ -60,7 +60,7 @@ public class JWTServiceIMPL implements JWTService {
     private String refreshToken(Map<String, Object> genClaimsRefresh, UserDetails userDetails) {
         genClaimsRefresh.put("role",userDetails.getAuthorities());
         Date now = new Date();
-        Date refreshExpire = new Date(now.getTime() + 1000 * 600 * 600);
+        Date refreshExpire = new Date(now.getTime() + 2000 * 900 * 900);
         return Jwts.builder().setClaims(genClaimsRefresh)
                 .setSubject(userDetails.getUsername())
                 .setExpiration(refreshExpire)

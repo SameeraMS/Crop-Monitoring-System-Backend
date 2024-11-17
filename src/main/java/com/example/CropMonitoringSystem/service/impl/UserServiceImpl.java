@@ -40,7 +40,14 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> searched = userDao.findById(userId);
 
         if (searched.isPresent()) {
-            userDao.save(mapping.toUserEntity(userDto));
+            UserEntity userEntity = searched.get();
+            userEntity.setPassword(userDto.getPassword());
+            if (userDto.getRole() == null) {
+                userEntity.setRole(userEntity.getRole());
+            } else {
+                userEntity.setRole(userDto.getRole());
+            }
+            userDao.save(userEntity);
         } else {
             log.error("User +" + userId + " not found");
             throw new DataPersistException("User +" + userId + " not found");

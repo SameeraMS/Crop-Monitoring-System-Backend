@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,8 +64,32 @@ public class UserController {
 
     @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateUser(@PathVariable("userId") String userId,@RequestBody UserDto userDto) {
+        if (userDto.getRole().equals(Role.ADMINISTRATIVE)) {
+            if (!userDto.getRoleCode().equals(adminCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (userDto.getRole().equals(Role.MANAGER)) {
+            if (!userDto.getRoleCode().equals(managerCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (userDto.getRole().equals(Role.SCIENTIST)) {
+            if (!userDto.getRoleCode().equals(scientistCode)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        UserDto selectedUser = userService.getSelectedUser(userId);
+
         try {
-            userDto.setEmail(userId);
+            if (userDto.getPassword() == null) {
+                userDto.setPassword(selectedUser.getPassword());
+            } else {
+                userDto.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
+            }
             userService.updateUser(userId, userDto);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (NotFoundException e) {
@@ -87,6 +113,27 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping(value = "/changePassword/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> checkPassword(@PathVariable("userId") String userId, @RequestBody UserDto userDto) {
+        UserDto selectedUser = userService.getSelectedUser(userId);
+
+        try {
+            String encodedPassword = new BCryptPasswordEncoder(12).encode(userDto.getPassword());
+            System.out.println("password: " + encodedPassword);
+            userDto.setPassword(encodedPassword);
+
+            userService.updateUser(userId, userDto);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
