@@ -29,11 +29,7 @@ public class CropEntity implements SuperEntity {
     @JoinColumn(name = "fieldId")
     private FieldEntity field;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "crop_log",
-            joinColumns = @JoinColumn(name = "cropId"),
-            inverseJoinColumns = @JoinColumn(name = "logId")
-    )
-    private List<LogEntity> logs;
+    @ManyToOne
+    @JoinColumn(name = "logId")
+    private LogEntity log;
 }

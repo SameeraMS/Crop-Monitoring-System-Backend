@@ -18,5 +18,5 @@ public class CropDto implements SuperDto {
     private String category;
     private String cropSeason;
     private String fieldId;
-    private List<LogDto> logs;
+    private String logId;
 }

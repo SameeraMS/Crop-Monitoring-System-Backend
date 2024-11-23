@@ -29,7 +29,7 @@ public class LogEntity implements SuperEntity {
     private List<FieldEntity> fields;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "logs",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "log",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CropEntity> crops;
 
     @JsonIgnore
