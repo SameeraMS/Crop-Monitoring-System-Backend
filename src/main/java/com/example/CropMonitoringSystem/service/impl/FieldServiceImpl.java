@@ -101,8 +101,17 @@ public class FieldServiceImpl implements FieldService {
     public void uploadFieldImage(String fieldId, String image1, String image2) {
         Optional<FieldEntity> searched = fieldDao.findById(fieldId);
         if (searched.isPresent()) {
-            searched.get().setImage1(image1);
-            searched.get().setImage2(image2);
+            if (image1 != null){
+                searched.get().setImage1(image1);
+            } else {
+                searched.get().setImage1(searched.get().getImage1());
+            }
+            if (image2 != null){
+                searched.get().setImage2(image2);
+            } else {
+                searched.get().setImage1(searched.get().getImage2());
+            }
+
         } else {
             log.error("Field not found for uploadFieldImage id: " + fieldId);
             throw new NotFoundException("Field +" + fieldId + " not found");

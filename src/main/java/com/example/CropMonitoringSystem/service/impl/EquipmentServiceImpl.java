@@ -3,6 +3,7 @@ package com.example.CropMonitoringSystem.service.impl;
 import com.example.CropMonitoringSystem.dao.EquipmentDao;
 import com.example.CropMonitoringSystem.dto.impl.EquipmentDto;
 import com.example.CropMonitoringSystem.entity.EquipmentType;
+import com.example.CropMonitoringSystem.entity.Status;
 import com.example.CropMonitoringSystem.entity.impl.EquipmentEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
@@ -33,6 +34,9 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public void saveEquipment(EquipmentDto equipmentDto) {
         equipmentDto.setEquipmentId(generateEquipmentId());
+        if (equipmentDto.getStaffId() != null) {
+            equipmentDto.setEquipmentStatus(Status.UNAVAILABLE);
+        }
         EquipmentEntity save = equipmentDao.save(mapping.toEquipmentEntity(equipmentDto));
         if (save == null) {
             log.error("Equipment not saved");
@@ -51,6 +55,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             equipmentEntity.setEquipmentStatus(equipmentDto.getEquipmentStatus());
             if (equipmentDto.getStaffId() != null) {
                 equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
+                equipmentDto.setEquipmentStatus(Status.UNAVAILABLE);
             } else {
                 equipmentEntity.setStaff(null);
                 log.info("staff is null in updateEquipment id: " + equipmentId);

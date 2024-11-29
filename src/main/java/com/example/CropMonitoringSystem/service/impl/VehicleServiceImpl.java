@@ -3,6 +3,7 @@ package com.example.CropMonitoringSystem.service.impl;
 import com.example.CropMonitoringSystem.dao.StaffDao;
 import com.example.CropMonitoringSystem.dao.VehicleDao;
 import com.example.CropMonitoringSystem.dto.impl.VehicleDto;
+import com.example.CropMonitoringSystem.entity.Status;
 import com.example.CropMonitoringSystem.entity.impl.VehicleEntity;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.VehicleService;
@@ -29,6 +30,9 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void saveVehicle(VehicleDto vehicleDto) {
         vehicleDto.setVehicleId(generateVehicleId());
+        if (vehicleDto.getStaffId() != null){
+            vehicleDto.setVehicleStatus(Status.UNAVAILABLE);
+        }
         VehicleEntity save = vehicleDao.save(mapping.toVehicleEntity(vehicleDto));
         if (save == null) {
             log.error("Vehicle not saved");
@@ -44,6 +48,7 @@ public class VehicleServiceImpl implements VehicleService {
             VehicleEntity vehicleEntity = searched.get();
             if (vehicleDto.getStaffId() != null) {
                 vehicleEntity.setStaff(staffDao.getReferenceById(vehicleDto.getStaffId()));
+                vehicleDto.setVehicleStatus(Status.UNAVAILABLE);
             } else {
                 vehicleEntity.setStaff(null);
             }
