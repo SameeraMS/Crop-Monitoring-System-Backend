@@ -32,7 +32,6 @@ public class StaffController {
 
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("staffId", staffId);
-
             return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
         } catch (DataPersistException e) {
             e.printStackTrace();
@@ -47,8 +46,12 @@ public class StaffController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> updateStaff(@PathVariable("staffId") String staffId, @RequestBody StaffDto staffDto) {
         try {
-            staffService.updateStaff(staffId, staffDto);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!staffId.matches(Regex.STAFF_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                staffService.updateStaff(staffId, staffDto);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (DataPersistException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -65,8 +68,12 @@ public class StaffController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> deleteStaff(@PathVariable("staffId") String staffId) {
         try {
-            staffService.deleteStaff(staffId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!staffId.matches(Regex.STAFF_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                staffService.deleteStaff(staffId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (NotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -78,6 +85,9 @@ public class StaffController {
 
     @GetMapping(value = "/{staffId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public StaffDto getSelectedStaff(@PathVariable("staffId") String staffId) {
+        if (!staffId.matches(Regex.STAFF_ID)) {
+            return null;
+        }
         return staffService.getSelectedStaff(staffId);
     }
 

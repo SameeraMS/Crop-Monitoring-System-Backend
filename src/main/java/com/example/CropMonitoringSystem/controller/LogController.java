@@ -30,7 +30,6 @@ public class LogController {
             logService.saveLog(logDto);
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("logId", saveId);
-
             return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
         } catch (DataPersistException e) {
             e.printStackTrace();
@@ -60,8 +59,12 @@ public class LogController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateLog(@PathVariable("logId") String logId,@RequestBody LogDto logDto) {
         try {
-            logService.updateLog(logId, logDto);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!logId.matches(Regex.LOG_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                logService.updateLog(logId, logDto);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (DataPersistException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -75,8 +78,12 @@ public class LogController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteLog(@PathVariable("logId") String logId) {
         try {
-            logService.deleteLog(logId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!logId.matches(Regex.LOG_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                logService.deleteLog(logId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -92,6 +99,9 @@ public class LogController {
     @GetMapping(value = "/{logId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public LogDto getSelectedLog(@PathVariable("logId") String logId) {
+        if (!logId.matches(Regex.LOG_ID)) {
+            return null;
+        }
         return logService.getSelectedLog(logId);
     }
 }

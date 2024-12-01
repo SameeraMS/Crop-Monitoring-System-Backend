@@ -3,6 +3,7 @@ package com.example.CropMonitoringSystem.controller;
 import com.example.CropMonitoringSystem.dto.impl.EquipmentDto;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.service.EquipmentService;
+import com.example.CropMonitoringSystem.util.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,8 +37,12 @@ public class EquipmentController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateEquipment(@PathVariable("equipmentId") String equipmentId, @RequestBody EquipmentDto equipmentDto) {
         try {
-            equipmentService.updateEquipment(equipmentId, equipmentDto);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (equipmentId == null || !equipmentId.matches(Regex.EQUIPMENT_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                equipmentService.updateEquipment(equipmentId, equipmentDto);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (DataPersistException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -51,8 +56,12 @@ public class EquipmentController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("equipmentId") String equipmentId) {
         try {
-            equipmentService.deleteEquipment(equipmentId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (equipmentId == null || !equipmentId.matches(Regex.EQUIPMENT_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                equipmentService.deleteEquipment(equipmentId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,6 +70,9 @@ public class EquipmentController {
 
     @GetMapping("/{equipmentId}")
     public EquipmentDto getEquipment(@PathVariable("equipmentId") String equipmentId) {
+        if (equipmentId == null || !equipmentId.matches(Regex.EQUIPMENT_ID)) {
+            return null;
+        }
         return equipmentService.getSelectedEquipment(equipmentId);
     }
 

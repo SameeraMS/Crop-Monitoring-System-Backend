@@ -4,6 +4,7 @@ import com.example.CropMonitoringSystem.dto.impl.VehicleDto;
 import com.example.CropMonitoringSystem.exception.DataPersistException;
 import com.example.CropMonitoringSystem.exception.NotFoundException;
 import com.example.CropMonitoringSystem.service.VehicleService;
+import com.example.CropMonitoringSystem.util.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,9 +40,13 @@ public class VehicleController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> updateVehicle(@PathVariable("vehicleId") String vehicleId, @RequestBody VehicleDto vehicleDto) {
         try {
-            vehicleDto.setVehicleId(vehicleId);
-            vehicleService.updateVehicle(vehicleId, vehicleDto);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!vehicleId.matches(Regex.VEHICLE_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                vehicleDto.setVehicleId(vehicleId);
+                vehicleService.updateVehicle(vehicleId, vehicleDto);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (NotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,8 +60,12 @@ public class VehicleController {
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMINISTRATIVE')")
     public ResponseEntity<Void> deleteVehicle(@PathVariable("vehicleId") String vehicleId) {
         try {
-            vehicleService.deleteVehicle(vehicleId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (!vehicleId.matches(Regex.VEHICLE_ID)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                vehicleService.deleteVehicle(vehicleId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         } catch (NotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,6 +77,9 @@ public class VehicleController {
 
     @GetMapping(value = "/{vehicleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public VehicleDto getSelectedVehicle(@PathVariable("vehicleId") String vehicleId) {
+        if (!vehicleId.matches(Regex.VEHICLE_ID)) {
+            return null;
+        }
         return vehicleService.getSelectedVehicle(vehicleId);
     }
 

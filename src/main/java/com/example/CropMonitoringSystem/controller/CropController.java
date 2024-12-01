@@ -31,7 +31,6 @@ public class CropController {
 
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("cropId", cropId);
-
             return new ResponseEntity<>(responseBody,HttpStatus.CREATED);
         } catch (DataPersistException e) {
             e.printStackTrace();
@@ -56,13 +55,16 @@ public class CropController {
         }
     }
 
-
     @PutMapping(value = "/{cropId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> updateCrop(@PathVariable("cropId") String cropId, @RequestBody CropDto cropDto) {
         try {
-            cropService.updateCrop(cropId, cropDto);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (cropId.matches(Regex.CROP_ID)) {
+                cropService.updateCrop(cropId, cropDto);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (DataPersistException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -72,25 +74,29 @@ public class CropController {
         }
     }
 
-
     @DeleteMapping("/{cropId}")
     @PreAuthorize("hasRole('MANAGER') or hasRole('SCIENTIST')")
     public ResponseEntity<Void> deleteCrop(@PathVariable("cropId") String cropId) {
         try {
-            cropService.deleteCrop(cropId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (cropId.matches(Regex.CROP_ID)) {
+                cropService.deleteCrop(cropId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
     @GetMapping(value = "/{cropId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CropDto getCrop(@PathVariable("cropId") String cropId) {
+        if (!cropId.matches(Regex.CROP_ID)) {
+            return null;
+        }
         return cropService.getSelectedCrop(cropId);
     }
-
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CropDto> getAllCrops() {
