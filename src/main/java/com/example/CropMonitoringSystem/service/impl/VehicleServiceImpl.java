@@ -46,12 +46,17 @@ public class VehicleServiceImpl implements VehicleService {
 
         if (searched.isPresent()) {
             VehicleEntity vehicleEntity = searched.get();
+            vehicleEntity.setVehicleStatus(vehicleDto.getVehicleStatus());
             if (vehicleDto.getStaffId() != null) {
                 vehicleEntity.setStaff(staffDao.getReferenceById(vehicleDto.getStaffId()));
-                vehicleDto.setVehicleStatus(Status.UNAVAILABLE);
+                vehicleEntity.setVehicleStatus(Status.UNAVAILABLE);
             } else {
                 vehicleEntity.setStaff(null);
             }
+            vehicleEntity.setLicenNo(vehicleDto.getLicenNo());
+            vehicleEntity.setCategory(vehicleDto.getCategory());
+            vehicleEntity.setFuelType(vehicleDto.getFuelType());
+            vehicleEntity.setRemark(vehicleDto.getRemark());
             vehicleDao.save(vehicleEntity);
         } else {
             log.error("Vehicle +" + vehicleId + " not found");

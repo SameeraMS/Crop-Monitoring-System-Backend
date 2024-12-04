@@ -55,7 +55,7 @@ public class EquipmentServiceImpl implements EquipmentService {
             equipmentEntity.setEquipmentStatus(equipmentDto.getEquipmentStatus());
             if (equipmentDto.getStaffId() != null) {
                 equipmentEntity.setStaff(mapping.toStaffEntity(staffService.getSelectedStaff(equipmentDto.getStaffId())));
-                equipmentDto.setEquipmentStatus(Status.UNAVAILABLE);
+                equipmentEntity.setEquipmentStatus(Status.UNAVAILABLE);
             } else {
                 equipmentEntity.setStaff(null);
                 log.info("staff is null in updateEquipment id: " + equipmentId);
